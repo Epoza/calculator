@@ -1,5 +1,5 @@
 var numbers = document.querySelectorAll('.number')
-
+var operators = document.querySelectorAll('.operator')
 var historyDisplay = document.getElementById('history')
 var currentDisplay = document.getElementById('current')
 var clear = document.getElementById('clear')
@@ -24,70 +24,124 @@ var addBtn = document.getElementById('add')
 
 let currentNum = '';
 let historyNum = '';
+let firstNum = '';
+let secondNum = '';
+let clickedOperator = false;
+let equalsPressed = false;
 let dot = false
 
 
-function main(){
+function update(){
+    clearScreen();
+    updateOperator();
+    isEqualsPressed();
 
-
-    numbers.forEach(number => {
-        number.addEventListener('click', (e) => {
-            if(e.target.innerText === '.' && !dot){
-                dot = true
-            } else if (e.target.innerText === '.' && dot){
-                return
-            }
-            currentNum += e.target.innerText;
-            currentDisplay.innerText = currentNum
-        })
-    })
-    clear.addEventListener('click', () => {
-        currentDisplay.innerText = 0
-        currentNum = '';
-    })
+    // numbers.forEach(number => {
+    //     number.addEventListener('click', (e) => {
+    //         if(e.target.innerText === '.' && !dot){
+    //             dot = true
+    //         } else if (e.target.innerText === '.' && dot){
+    //             return
+    //         }
+    //         currentNum += e.target.innerText;
+    //         currentDisplay.innerText = currentNum
+    //     })
+    // })
+    // clear.addEventListener('click', () => {
+    //     currentDisplay.innerText = 0
+    //     currentNum = '';
+    // })
 }
 
-main()
+update()
 function add(a, b){
-    console.log(a + b)
+    firstNum = a + b
+    currentDisplay.innerText = firstNum
 }
-
-add(3, 5)
 
 function subtract(a, b){
-    console.log(a - b)
+    firstNum = a - b
+    currentDisplay.innerText = firstNum
 }
-
-subtract(8, 9)
 
 function multiply(a, b){
-    console.log(a * b)
+    firstNum = a * b
+    currentDisplay.innerText = firstNum
 }
 
-multiply(9, 6)
 
 function divide(a, b){
-    console.log(a / b)
+    firstNum = a * b
+    currentDisplay.innerText = firstNum
 }
 
-divide(10, 2)
 
-function operate(operator, a, b){
-    switch(operator){
-        case '+':
-            add(a, b);
-            break;
-        case '-':
-            subtract(a, b);
-            break;   
-        case '*':
-            multiply(a, b); 
-            break;
-        case '/':
-            divide(a, b);
-            break;
+function updateOperator() {
+    operators.forEach(operator => {
+        operator.addEventListener('click', (e) =>{
+            clickedOperator = e.target.innerText
+            if(clickedOperator){
+                currentDisplay.innerText = clickedOperator
+            }
+        })
+    })
+}
+
+
+
+function operate(getOperator, a, b){
+    numbers.forEach(number => {
+        number.addEventListener('click', (e) => {
+            if(clickedOperator === false){
+                firstNum += e.target.innerText;
+                currentDisplay.innerText = firstNum;
+            } else {
+                // e.target.innerText = ''
+                secondNum += e.target.innerText
+                currentDisplay.innerText = firstNum + getOperator + secondNum
+            }
+        })
+    })
+
+    if(equalsPressed === true){
+        switch(getOperator){
+            case '+':
+                add(a, b);
+                break;
+            case '-':
+                subtract(a, b);
+                break;   
+            case '*':
+                multiply(a, b); 
+                break;
+            case '/':
+                divide(a, b);
+                break;
+        }
     }
 }
+operate(clickedOperator, firstNum, secondNum)
 
-operate('+', 5, 6)
+function isEqualsPressed(){
+    equals.addEventListener('click', () => {
+        equalsPressed = true
+    })
+}
+
+function deleteLastDigit(){
+
+}
+
+function clearScreen(){
+    clear.addEventListener('click', () => {
+        currentDisplay.innerText = 0
+        firstNum = '';
+        secondNum = '';
+        currentNum = '';
+        equalsPressed = false;
+        clickedOperator = false;
+    })
+}
+
+
 
