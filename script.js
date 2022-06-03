@@ -27,7 +27,6 @@ let historyNum = '';
 let firstNum = '';
 let secondNum = '';
 let clickedOperator = false;
-let equalsPressed = false;
 let dot = false
 
 
@@ -35,6 +34,8 @@ function update(){
     clearScreen();
     updateOperator();
     isEqualsPressed();
+    showInput();
+
 
     // numbers.forEach(number => {
     //     number.addEventListener('click', (e) => {
@@ -57,22 +58,26 @@ update()
 function add(a, b){
     firstNum = a + b
     currentDisplay.innerText = firstNum
+    secondNum = '';
 }
 
 function subtract(a, b){
     firstNum = a - b
     currentDisplay.innerText = firstNum
+    secondNum = '';
 }
 
 function multiply(a, b){
     firstNum = a * b
     currentDisplay.innerText = firstNum
+    secondNum = '';
 }
 
 
 function divide(a, b){
-    firstNum = a * b
+    firstNum = a / b
     currentDisplay.innerText = firstNum
+    secondNum = '';
 }
 
 
@@ -90,6 +95,28 @@ function updateOperator() {
 
 
 function operate(getOperator, a, b){
+    console.log(getOperator)
+
+    a = parseInt(a)
+    b = parseInt(b)
+
+    switch(getOperator){
+        case '+':
+            add(a, b);
+            break;
+        case '-':
+            subtract(a, b);
+            break;   
+        case '*':
+            multiply(a, b); 
+            break;
+        case '/':
+            divide(a, b);
+            break;
+    }
+}
+
+function showInput() {
     numbers.forEach(number => {
         number.addEventListener('click', (e) => {
             if(clickedOperator === false){
@@ -98,33 +125,17 @@ function operate(getOperator, a, b){
             } else {
                 // e.target.innerText = ''
                 secondNum += e.target.innerText
-                currentDisplay.innerText = firstNum + getOperator + secondNum
+                currentDisplay.innerText = firstNum + clickedOperator + secondNum
             }
         })
     })
-
-    if(equalsPressed === true){
-        switch(getOperator){
-            case '+':
-                add(a, b);
-                break;
-            case '-':
-                subtract(a, b);
-                break;   
-            case '*':
-                multiply(a, b); 
-                break;
-            case '/':
-                divide(a, b);
-                break;
-        }
-    }
 }
-operate(clickedOperator, firstNum, secondNum)
+
+
 
 function isEqualsPressed(){
     equals.addEventListener('click', () => {
-        equalsPressed = true
+        operate(clickedOperator, firstNum, secondNum)
     })
 }
 
