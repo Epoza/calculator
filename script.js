@@ -25,11 +25,26 @@ function update(){
     deleteLastDigit();
 }
 
-update()
 function reset(){
     currentDisplay.innerText = firstNum
     secondNum = '';
     clickedOperator = false;
+}
+
+function showInput() {
+    numbers.forEach(number => {
+        number.addEventListener('click', (e) => {
+            if(clickedOperator === false){
+                insertDecimal();
+                firstNum += e.target.innerText;
+                currentDisplay.innerText = firstNum;
+            } else {
+                insertDecimal();
+                secondNum += e.target.innerText
+                currentDisplay.innerText = firstNum + clickedOperator + secondNum
+            }
+        })
+    })
 }
 
 function updateOperator() {
@@ -46,19 +61,18 @@ function updateOperator() {
                 clickedOperator = e.target.innerText
                 currentDisplay.innerText = firstNum + clickedOperator
             }
+            if(clickedOperator && secondNum.includes('.') === false){
+                hasDecimal = false
+            }
         })
     })
-
 }
-
 
 
 function operate(getOperator, a, b){
 
     a = parseFloat(a)
     b = parseFloat(b)
-
-
 
     switch(getOperator){
         case '+':
@@ -79,32 +93,16 @@ function operate(getOperator, a, b){
             break;
     }
 
-    hasDecimal = false
-}
-
-function showInput() {
-    numbers.forEach(number => {
-        number.addEventListener('click', (e) => {
-            if(clickedOperator === false){
-                insertDecimal();
-                firstNum += e.target.innerText;
-                currentDisplay.innerText = firstNum;
-            } else {
-                insertDecimal();
-                secondNum += e.target.innerText
-                currentDisplay.innerText = firstNum + clickedOperator + secondNum
-            }
-        })
-    })
+    hasDecimal = firstNum.includes('.') ? true : false
 }
 
 function insertDecimal() {
+    // checks if first number has decimal after doing operation
     decimal.addEventListener('click', () => {
         if(!clickedOperator && !hasDecimal){
             hasDecimal = true
             firstNum += '.'
             currentDisplay.innerText = firstNum
-            
         }
         if(clickedOperator && !hasDecimal){
             hasDecimal = true
@@ -132,7 +130,6 @@ function equalsPressed(){
 
 function deleteLastDigit(){
     del.addEventListener('click', () => {
-         // get this second number to work
         if (secondNum != ''){
             let sliceCurrentDislay = String(secondNum)
             secondNum = sliceCurrentDislay.slice(0, -1);
@@ -147,15 +144,20 @@ function deleteLastDigit(){
             firstNum = sliceCurrentDislay.slice(0, -1);
             currentDisplay.innerText = firstNum
         }
-        if(firstNum.indexOf('.') === -1 || secondNum.indexOf('.') === -1){
+        if(!secondNum.includes('.')){
             hasDecimal = false
         }
+        if(secondNum === ''){
+            hasDecimal = firstNum.includes('.') ? true : false
+        }
+        
     })
 }
 
 function clearScreen(){
     clear.addEventListener('click', () => {
         currentDisplay.innerText = 0
+        historyDisplay.innerText = ''
         firstNum = '';
         secondNum = '';
         currentNum = '';
@@ -164,6 +166,8 @@ function clearScreen(){
         hasDecimal = false
     })
 }
+
+update()
 
 
 
