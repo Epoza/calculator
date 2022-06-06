@@ -36,8 +36,6 @@ function update(){
     updateOperator();
     equalsPressed();
     showInput();
-    insertDecimal();
-
 }
 
 update()
@@ -52,8 +50,8 @@ function updateOperator() {
         operator.addEventListener('click', (e) =>{
             clickedOperator = clickedOperator === false ? e.target.innerText : clickedOperator
             if(clickedOperator){
+                hasDecimal = false
                 currentDisplay.innerText = clickedOperator
-                
             } if(clickedOperator && secondNum != '') {
                 secondNum = secondNum === '' ? 0 : secondNum
                 historyDisplay.innerText = firstNum + clickedOperator + secondNum
@@ -67,10 +65,11 @@ function updateOperator() {
 
 
 function operate(getOperator, a, b){
-    console.log(getOperator)
 
-    a = parseInt(a)
-    b = parseInt(b)
+    a = parseFloat(a)
+    b = hasDecimal === true ? parseFloat(b) : parseInt(b)
+
+
 
     switch(getOperator){
         case '+':
@@ -90,27 +89,40 @@ function operate(getOperator, a, b){
             reset();
             break;
     }
+
+    hasDecimal = false
 }
 
 function showInput() {
     numbers.forEach(number => {
         number.addEventListener('click', (e) => {
             if(clickedOperator === false){
+                insertDecimal();
                 firstNum += e.target.innerText;
                 currentDisplay.innerText = firstNum;
             } else {
+                insertDecimal();
                 secondNum += e.target.innerText
                 currentDisplay.innerText = firstNum + clickedOperator + secondNum
-            }// el if clickedOperator != false &&
+            }
         })
     })
 }
 
 function insertDecimal() {
     decimal.addEventListener('click', () => {
-        firstNum += '.'
+        if(!clickedOperator && !hasDecimal){
+            hasDecimal = true
+            firstNum += '.'
+            currentDisplay.innerText = firstNum
+            
+        }
+        if(clickedOperator && !hasDecimal){
+            hasDecimal = true
+            secondNum += '.'
+            currentDisplay.innerText = firstNum + clickedOperator + secondNum
+        }
     })
-    //not done
 }
 
 
@@ -134,6 +146,7 @@ function clearScreen(){
         currentNum = '';
         equalsPressed = false;
         clickedOperator = false;
+        hasDecimal = false
     })
 
     //move to function deletelastdigit
