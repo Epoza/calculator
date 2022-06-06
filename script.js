@@ -4,22 +4,8 @@ var historyDisplay = document.getElementById('history')
 var currentDisplay = document.getElementById('current')
 var clear = document.getElementById('clear')
 var del = document.getElementById('delete')
-var seven = document.getElementById('7')
-var eight = document.getElementById('8')
-var nine = document.getElementById('9')
-var divideBtn = document.getElementById('divide')
-var four = document.getElementById('4')
-var five = document.getElementById('5')
-var six = document.getElementById('6')
-var multiplyBtn = document.getElementById('multiply')
-var one = document.getElementById('1')
-var two = document.getElementById('2')
-var three = document.getElementById('3')
-var subtractBtn = document.getElementById('subtract')
 var decimal = document.getElementById('decimal')
-var zeroBtn = document.getElementById('0')
 var equals = document.getElementById('equals')
-var addBtn = document.getElementById('add')
 
 
 let currentNum = '';
@@ -36,6 +22,7 @@ function update(){
     updateOperator();
     equalsPressed();
     showInput();
+    deleteLastDigit();
 }
 
 update()
@@ -51,11 +38,13 @@ function updateOperator() {
             clickedOperator = clickedOperator === false ? e.target.innerText : clickedOperator
             if(clickedOperator){
                 hasDecimal = false
-                currentDisplay.innerText = clickedOperator
+                currentDisplay.innerText = firstNum + clickedOperator
             } if(clickedOperator && secondNum != '') {
                 secondNum = secondNum === '' ? 0 : secondNum
                 historyDisplay.innerText = firstNum + clickedOperator + secondNum
                 operate(clickedOperator, firstNum, secondNum)
+                clickedOperator = e.target.innerText
+                currentDisplay.innerText = firstNum + clickedOperator
             }
         })
     })
@@ -67,7 +56,7 @@ function updateOperator() {
 function operate(getOperator, a, b){
 
     a = parseFloat(a)
-    b = hasDecimal === true ? parseFloat(b) : parseInt(b)
+    b = parseFloat(b)
 
 
 
@@ -128,14 +117,40 @@ function insertDecimal() {
 
 function equalsPressed(){
     equals.addEventListener('click', () => {
-        secondNum = secondNum === '' ? 0 : secondNum
-        historyDisplay.innerText = firstNum + clickedOperator + secondNum
-        operate(clickedOperator, firstNum, secondNum)
+        if(clickedOperator === '/' && secondNum === '0'){
+            historyDisplay.innerText = 'DON\'T YOU DARE DIVIDE BY 0'
+        }else if(firstNum && clickedOperator && secondNum) {
+            secondNum = secondNum === '' ? 0 : secondNum
+            historyDisplay.innerText = firstNum + clickedOperator + secondNum
+            operate(clickedOperator, firstNum, secondNum)
+        } else{ 
+            historyDisplay.innerText = 'Please input a full equation'
+        }
+
     })
 }
 
 function deleteLastDigit(){
-
+    del.addEventListener('click', () => {
+         // get this second number to work
+        if (secondNum != ''){
+            let sliceCurrentDislay = String(secondNum)
+            secondNum = sliceCurrentDislay.slice(0, -1);
+            currentDisplay.innerText = firstNum + clickedOperator + secondNum
+        } else if (clickedOperator && secondNum === ''){
+            let sliceCurrentDislay = String(clickedOperator)
+            clickedOperator = sliceCurrentDislay.slice(0, -1);
+            currentDisplay.innerText = firstNum + clickedOperator
+            clickedOperator = false
+        } else if(firstNum != ''){
+            let sliceCurrentDislay = String(firstNum)
+            firstNum = sliceCurrentDislay.slice(0, -1);
+            currentDisplay.innerText = firstNum
+        }
+        if(firstNum.indexOf('.') === -1 || secondNum.indexOf('.') === -1){
+            hasDecimal = false
+        }
+    })
 }
 
 function clearScreen(){
@@ -147,13 +162,6 @@ function clearScreen(){
         equalsPressed = false;
         clickedOperator = false;
         hasDecimal = false
-    })
-
-    //move to function deletelastdigit
-    del.addEventListener('click', () => {
-        sliceDisplay = String(currentDisplay.innerText)
-        sliceDisplay = sliceDisplay.slice(0, -1);
-        currentDisplay.innerText = sliceDisplay
     })
 }
 
