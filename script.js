@@ -92,8 +92,8 @@ function operate(getOperator, a, b){
             reset();
             break;
     }
+    hasDecimal = firstNum.toString().includes('.') ? true : false
 
-    hasDecimal = firstNum.includes('.') ? true : false
 }
 
 function insertDecimal() {
@@ -144,11 +144,11 @@ function deleteLastDigit(){
             firstNum = sliceCurrentDislay.slice(0, -1);
             currentDisplay.innerText = firstNum
         }
-        if(!secondNum.includes('.')){
+        if(!secondNum.toString().includes('.')){
             hasDecimal = false
         }
         if(secondNum === ''){
-            hasDecimal = firstNum.includes('.') ? true : false
+            hasDecimal = firstNum.toString().includes('.') ? true : false
         }
         
     })
