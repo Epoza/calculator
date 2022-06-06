@@ -28,58 +28,24 @@ let firstNum = '';
 let secondNum = '';
 let clickedOperator = false;
 let dot = false
+let sliceDisplay = '';
 
 
 function update(){
     clearScreen();
     updateOperator();
-    isEqualsPressed();
+    equalsPressed();
     showInput();
+    insertDecimal();
 
-
-    // numbers.forEach(number => {
-    //     number.addEventListener('click', (e) => {
-    //         if(e.target.innerText === '.' && !dot){
-    //             dot = true
-    //         } else if (e.target.innerText === '.' && dot){
-    //             return
-    //         }
-    //         currentNum += e.target.innerText;
-    //         currentDisplay.innerText = currentNum
-    //     })
-    // })
-    // clear.addEventListener('click', () => {
-    //     currentDisplay.innerText = 0
-    //     currentNum = '';
-    // })
 }
 
 update()
-function add(a, b){
-    firstNum = a + b
+function reset(){
     currentDisplay.innerText = firstNum
     secondNum = '';
+    clickedOperator = false;
 }
-
-function subtract(a, b){
-    firstNum = a - b
-    currentDisplay.innerText = firstNum
-    secondNum = '';
-}
-
-function multiply(a, b){
-    firstNum = a * b
-    currentDisplay.innerText = firstNum
-    secondNum = '';
-}
-
-
-function divide(a, b){
-    firstNum = a / b
-    currentDisplay.innerText = firstNum
-    secondNum = '';
-}
-
 
 function updateOperator() {
     operators.forEach(operator => {
@@ -87,6 +53,11 @@ function updateOperator() {
             clickedOperator = e.target.innerText
             if(clickedOperator){
                 currentDisplay.innerText = clickedOperator
+                
+            } if(clickedOperator && secondNum != '') {
+                secondNum = secondNum === '' ? 0 : secondNum
+                historyDisplay.innerText = firstNum + clickedOperator + secondNum
+                operate(clickedOperator, firstNum, secondNum)
             }
         })
     })
@@ -102,16 +73,20 @@ function operate(getOperator, a, b){
 
     switch(getOperator){
         case '+':
-            add(a, b);
+            firstNum = a + b;
+            reset();
             break;
         case '-':
-            subtract(a, b);
+            firstNum = a - b;
+            reset();
             break;   
         case '*':
-            multiply(a, b); 
+            firstNum = a * b;
+            reset();
             break;
         case '/':
-            divide(a, b);
+            firstNum = a / b;
+            reset();
             break;
     }
 }
@@ -123,7 +98,6 @@ function showInput() {
                 firstNum += e.target.innerText;
                 currentDisplay.innerText = firstNum;
             } else {
-                // e.target.innerText = ''
                 secondNum += e.target.innerText
                 currentDisplay.innerText = firstNum + clickedOperator + secondNum
             }
@@ -131,10 +105,18 @@ function showInput() {
     })
 }
 
+function insertDecimal() {
+    decimal.addEventListener('click', () => {
+        currentDisplay.innerText += '.'
+    })
+    //not done
+}
 
 
-function isEqualsPressed(){
+function equalsPressed(){
     equals.addEventListener('click', () => {
+        secondNum = secondNum === '' ? 0 : secondNum
+        historyDisplay.innerText = firstNum + clickedOperator + secondNum
         operate(clickedOperator, firstNum, secondNum)
     })
 }
@@ -151,6 +133,11 @@ function clearScreen(){
         currentNum = '';
         equalsPressed = false;
         clickedOperator = false;
+    })
+    del.addEventListener('click', () => {
+        sliceDisplay = String(currentDisplay.innerText)
+        sliceDisplay = sliceDisplay.slice(0, -1);
+        currentDisplay.innerText = sliceDisplay
     })
 }
 
