@@ -27,7 +27,7 @@ let historyNum = '';
 let firstNum = '';
 let secondNum = '';
 let clickedOperator = false;
-let dot = false
+let hasDecimal = false
 let sliceDisplay = '';
 
 
@@ -50,7 +50,7 @@ function reset(){
 function updateOperator() {
     operators.forEach(operator => {
         operator.addEventListener('click', (e) =>{
-            clickedOperator = e.target.innerText
+            clickedOperator = clickedOperator === false ? e.target.innerText : clickedOperator
             if(clickedOperator){
                 currentDisplay.innerText = clickedOperator
                 
@@ -61,6 +61,7 @@ function updateOperator() {
             }
         })
     })
+
 }
 
 
@@ -100,14 +101,14 @@ function showInput() {
             } else {
                 secondNum += e.target.innerText
                 currentDisplay.innerText = firstNum + clickedOperator + secondNum
-            }
+            }// el if clickedOperator != false &&
         })
     })
 }
 
 function insertDecimal() {
     decimal.addEventListener('click', () => {
-        currentDisplay.innerText += '.'
+        firstNum += '.'
     })
     //not done
 }
@@ -134,6 +135,8 @@ function clearScreen(){
         equalsPressed = false;
         clickedOperator = false;
     })
+
+    //move to function deletelastdigit
     del.addEventListener('click', () => {
         sliceDisplay = String(currentDisplay.innerText)
         sliceDisplay = sliceDisplay.slice(0, -1);
