@@ -79,4 +79,9 @@ button {
 button.big {
     width: 190px;
     height: 75px;
+    background-color: rgb(207, 200, 155);
+}
+
+button.operator {
+    background-color: #e9e6c9;
 }
